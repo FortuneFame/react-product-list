@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/userSlice';
-import productReducer from './slices/productSlice'; 
-import commentsReducer from './slices/commentsSlice';
-import commentUserReducer from './slices/commentUserSlice'
+import userReducer from './slices/user.slice';
+import productReducer from './slices/product.slice'; 
+import commentsReducer from './slices/comments.slice';
+import commentUserReducer from './slices/commentUser.slice'
 
 const store = configureStore({
   reducer: {

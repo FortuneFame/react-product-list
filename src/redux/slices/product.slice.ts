@@ -16,9 +16,9 @@ interface ProductState {
 export type FilterType = 'all' | 'exist' | 'not_exist';
 
 const initialState: ProductState = {
-  list: [],
-  filtered: [],
-  filterType: 'all',
+  list: JSON.parse(localStorage.getItem('products') || '[]'),
+  filtered: JSON.parse(localStorage.getItem('products') || '[]'),
+  filterType: 'all', 
 };
 
 const productSlice = createSlice({
@@ -27,25 +27,48 @@ const productSlice = createSlice({
   reducers: {
     addProduct: (state, action: PayloadAction<Product>) => {
       state.list.push(action.payload);
-      state.filtered = state.list.filter((product) => product.exist);
+      state.filtered = state.list.filter((product) => {
+        if (state.filterType === 'all') {
+          return true;
+        } else if (state.filterType === 'exist') {
+          return product.exist;
+        } else {
+          return !product.exist;
+        }
+      });
+      localStorage.setItem('products', JSON.stringify(state.list));
     },
     removeProduct: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter((product) => product.id !== action.payload);
-      state.filtered = state.list.filter((product) => product.exist);
+      state.filtered = state.filtered.filter((product) => product.id !== action.payload);
+      localStorage.setItem('products', JSON.stringify(state.list));
     },
     updateProduct: (state, action: PayloadAction<Product>) => {
       const index = state.list.findIndex((product) => product.id === action.payload.id);
       if (index !== -1) {
         state.list[index] = action.payload;
+        state.filtered = state.filtered.map((product) => {
+          if (product.id === action.payload.id) {
+            return action.payload;
+          }
+          return product;
+        });
       }
-      state.filtered = state.list.filter((product) => product.exist);
+      localStorage.setItem('products', JSON.stringify(state.list));
     },
     filterByExistence: (state) => {
       state.filtered = state.list.filter((product) => product.exist);
+      state.filterType = 'exist';
     },
 
     filterByNotExistence: (state) => {
       state.filtered = state.list.filter((product) => !product.exist);
+      state.filterType = 'not_exist';
+    },
+
+    filterByAll: (state) => {
+      state.filtered = state.list;
+      state.filterType = 'all';
     },
     selectProduct: (state, action: PayloadAction<number>) => {
       const selectedProductId = action.payload;
@@ -54,6 +77,14 @@ const productSlice = createSlice({
   },
 });
 
-export const { addProduct, removeProduct, updateProduct, filterByExistence, filterByNotExistence,selectProduct } = productSlice.actions;
+export const {
+  addProduct,
+  removeProduct,
+  updateProduct,
+  filterByExistence,
+  filterByNotExistence,
+  selectProduct,
+  filterByAll
+} = productSlice.actions;
 
 export default productSlice.reducer;

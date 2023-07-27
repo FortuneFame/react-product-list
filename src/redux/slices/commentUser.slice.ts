@@ -4,6 +4,15 @@ import axios from 'axios';
 interface CommentUser {
   id: number;
   name: string;
+  username: string;
+  email: string;
+  address?: {
+    city: string;
+    street: string;
+    suite: string;
+  };
+  phone: string;
+  website: string;
 }
 
 interface CommentUserState {

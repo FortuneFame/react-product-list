@@ -6,9 +6,8 @@ import * as Yup from 'yup';
 import { Alert, Box, Button, FormControlLabel, Radio, RadioGroup, Snackbar, SnackbarCloseReason, TextField, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
-import { loginUser } from '../redux/slices/userSlice';
-import { useAppDispatch, useAppSelector } from '../redux/hooks/hooks';
-
+import { loginUser } from '../../redux/slices/user.slice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 interface FormValues {
   name: string;
@@ -56,23 +55,21 @@ const LoginPage: FC = () => {
     setOpen(false);
   };
 
-const handleSubmit = async (values: FormValues) => {
-  if (values.useName) {
-    const { name, surname, email } = values;
-    await dispatch(loginUser({ name: `${name} ${surname}`, email }));
-  } else {
-    const { username, email } = values;
-    await dispatch(loginUser({ name: username, email }));
-  }
-};
+  const handleSubmit = async (values: FormValues) => {
+    if (values.useName) {
+      const { name, surname, email } = values;
+      await dispatch(loginUser({ name: `${name} ${surname}`, email }));
+    } else {
+      const { username, email } = values;
+      await dispatch(loginUser({ name: username, email }));
+    }
+  };
 
   useEffect(() => {
     if (user) {
       navigate('/home');
     }
   }, [user, navigate]);
-
-
 
   return (
     <Box
@@ -84,7 +81,7 @@ const handleSubmit = async (values: FormValues) => {
       padding={2}
     >
       <Typography variant="h4" gutterBottom>
-        Sing in
+        Sign in
       </Typography>
       <Formik
         initialValues={initialValues}
@@ -93,7 +90,7 @@ const handleSubmit = async (values: FormValues) => {
       >
         {({ errors, touched, values, setFieldValue }) => (
           <Form style={{ display: 'flex', flexDirection: 'column', gap: '1em', width: '300px' }}>
-            <RadioGroup style={{display:'flex', justifyContent:'center'}} row value={values.useName ? 'name' : 'username'} onChange={(e) => {
+            <RadioGroup style={{ display: 'flex', justifyContent: 'center' }} row value={values.useName ? 'name' : 'username'} onChange={(e) => {
               setFieldValue('useName', e.target.value === 'name');
             }}>
               <FormControlLabel value="name" control={<Radio />} label="Name" />
