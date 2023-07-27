@@ -6,13 +6,13 @@ interface CommentUser {
   name: string;
 }
 
-interface UserState {
+interface CommentUserState {
   user: CommentUser | null;
   status: 'idle' | 'loading' | 'failed';
   error: string | null;
 }
 
-const initialState: UserState = {
+const initialState: CommentUserState = {
   user: null,
   status: 'idle',
   error: null,
@@ -34,7 +34,6 @@ export const fetchCommentUser = createAsyncThunk<CommentUser, number, {}>(
     }
   }
 );
-
 
 export const CommentUserSlice = createSlice({
   name: 'user',

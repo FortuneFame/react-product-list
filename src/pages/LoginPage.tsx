@@ -1,6 +1,5 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { unwrapResult } from '@reduxjs/toolkit';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -57,21 +56,15 @@ const LoginPage: FC = () => {
     setOpen(false);
   };
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleSubmit = async (values: FormValues) => {
-    values.name = values.name.trim();
-    values.surname = values.surname.trim();
-  
-    const resultAction = await dispatch(loginUser(values));
-    const user = unwrapResult(resultAction);
-  
-    if (!user) {
-      handleOpen();
-    }
-  };
+const handleSubmit = async (values: FormValues) => {
+  if (values.useName) {
+    const { name, surname, email } = values;
+    await dispatch(loginUser({ name: `${name} ${surname}`, email }));
+  } else {
+    const { username, email } = values;
+    await dispatch(loginUser({ name: username, email }));
+  }
+};
 
   useEffect(() => {
     if (user) {
